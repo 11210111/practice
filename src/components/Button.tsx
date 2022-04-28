@@ -2,7 +2,7 @@ import React from 'react';
 import './styles.css';
 
 type ButtonProps = {
-  text: string;
+  text: string | React.ReactElement;
   type: string;
 };
 
