@@ -15,15 +15,25 @@ const Search: React.FC = () => {
   const handleAddKeyword = (e: React.FormEvent) => {
     e.preventDefault();
     if (keyword) {
-      const mapKeywords = keywords.map((data) => data.keyword);
-      if (!mapKeywords.includes(keyword)) {
+      const preKeyword = keywords.find(
+        (keywordData) => keywordData.keyword === keyword
+      );
+      if (!preKeyword) {
         setKeywords([{ id: Date.now(), keyword }, ...keywords]);
       }
     }
   };
 
+  const handleRemoveKeyword = (id: number) => {
+    setKeywords(keywords.filter((keywordData) => keywordData.id !== id));
+  };
+
+  const handleRemoveAll = () => {
+    setKeywords([]);
+  };
+
   useEffect(() => {
-    keywords.length && setIsOpen(true);
+    keywords.length ? setIsOpen(true) : setIsOpen(false);
   }, [keywords.length]);
 
   return (
@@ -34,7 +44,13 @@ const Search: React.FC = () => {
         onAddKeyword={handleAddKeyword}
         isOpen={isOpen}
       />
-      {!!keywords.length && <SearchList keywords={keywords} />}
+      {!!keywords.length && (
+        <SearchList
+          keywords={keywords}
+          onRemoveKeyword={handleRemoveKeyword}
+          onRemoveAll={handleRemoveAll}
+        />
+      )}
     </article>
   );
 };
