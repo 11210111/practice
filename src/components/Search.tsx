@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchInput from './SearchInput';
 import SearchList from './SearchList';
 
@@ -10,6 +10,7 @@ export interface searchKeyword {
 const Search: React.FC = () => {
   const [keyword, setKeyword] = useState<string>('');
   const [keywords, setKeywords] = useState<searchKeyword[]>([]);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleAddKeyword = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,14 +22,19 @@ const Search: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    keywords.length && setIsOpen(true);
+  }, [keywords.length]);
+
   return (
     <article className='search'>
       <SearchInput
         keyword={keyword}
         setKeyword={setKeyword}
         onAddKeyword={handleAddKeyword}
+        isOpen={isOpen}
       />
-      <SearchList />
+      {!!keywords.length && <SearchList keywords={keywords} />}
     </article>
   );
 };

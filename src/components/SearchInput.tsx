@@ -7,12 +7,14 @@ interface Props {
   keyword: string;
   setKeyword: React.Dispatch<React.SetStateAction<string>>;
   onAddKeyword: (e: React.FormEvent) => void;
+  isOpen: boolean;
 }
 
 const SearchInput: React.FC<Props> = ({
   keyword,
   setKeyword,
   onAddKeyword,
+  isOpen,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -26,7 +28,7 @@ const SearchInput: React.FC<Props> = ({
     <form className='search-form' onSubmit={(e) => onAddKeyword(e)}>
       <input
         type='text'
-        className='search-input'
+        className={`search-input ${isOpen && `is-open`}`}
         ref={inputRef}
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
