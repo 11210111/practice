@@ -13,15 +13,14 @@ const Search: React.FC = () => {
   const [keywords, setKeywords] = useState<searchKeyword[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const handleAddKeyword = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (keyword) {
-      const preKeyword = keywords.find(
-        (keywordData) => keywordData.keyword === keyword
-      );
-      if (!preKeyword) {
-        setKeywords([{ id: Date.now(), keyword }, ...keywords]);
-      }
+  const handleAddKeyword = (e?: React.FormEvent, word: string = keyword) => {
+    e && e.preventDefault();
+    if (word) {
+      makeUniqueKeywords(word);
+      setKeywords((keywords) => [
+        { id: Date.now(), keyword: word },
+        ...keywords,
+      ]);
     }
     setIsOpen(false);
   };
@@ -32,6 +31,24 @@ const Search: React.FC = () => {
 
   const handleRemoveAll = () => {
     setKeywords([]);
+  };
+
+  const handleClickKeyword = (keyword: string) => {
+    setKeyword(keyword);
+    handleAddKeyword(undefined, keyword);
+  };
+
+  const makeUniqueKeywords = (keyword: string) => {
+    const preKeyword = keywords.find(
+      (keywordData) => keywordData.keyword === keyword
+    );
+    if (!!preKeyword) {
+      setKeywords((keywords) =>
+        keywords.filter(
+          (keywordData) => keywordData.keyword !== preKeyword.keyword
+        )
+      );
+    }
   };
 
   return (
@@ -48,6 +65,7 @@ const Search: React.FC = () => {
           keywords={keywords}
           onRemoveKeyword={handleRemoveKeyword}
           onRemoveAll={handleRemoveAll}
+          onClickKeyword={handleClickKeyword}
         />
       )}
       {!isOpen && !!keywords.length ? (
