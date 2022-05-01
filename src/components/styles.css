@@ -10,7 +10,7 @@
 
 /*  button  */
 .button {
-  background-color: var(--white);
+  background-color: transparent;
   border: none;
 }
 
@@ -25,14 +25,32 @@
   right: 7px;
   top: 15px;
   color: var(--yellow);
+  transition: font-size 100ms ease-in-out;
+}
+
+.button-search:hover {
+  font-size: 24px;
 }
 
 .button-delete-all {
-  padding: 10px;
+  padding: 10px 0;
+  transition: all 200ms ease-in-out;
+}
+
+.button-delete-all:hover {
+  color: var(--red);
+  font-weight: bold;
 }
 
 .button-delete {
-  margin-right: 10px;
+  text-align: right;
+  margin-top: 5px;
+  transition: all 100ms ease-in-out;
+}
+
+.button-delete:hover {
+  color: var(--red);
+  font-weight: 600;
 }
 
 /*  search input  */
@@ -81,13 +99,29 @@
 
 .search-list ul {
   list-style: none;
-  margin: 0;
+  margin: 10px 0 0;
   padding: 0;
 }
 
-.search-list li {
+.search-item {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  transition: all 200ms ease-in-out;
+}
+
+.search-item:hover {
+  background-color: var(--shadow);
+  box-shadow: 1px -1px 1px 1px var(--shadow);
+}
+
+.search-keyword {
+  flex: 8;
+  margin: 5px 5px 0;
+}
+
+.search-keyword:hover {
+  cursor: pointer;
+  font-weight: 600;
 }
 
 /* result */

@@ -27,8 +27,8 @@ const SearchList: React.FC<Props> = ({
       )}
       <ul>
         {keywords.map((keywordData) => (
-          <li key={keywordData.id}>
-            <div>{keywordData.keyword}</div>
+          <li key={keywordData.id} className='search-item'>
+            <div className='search-keyword'>{keywordData.keyword}</div>
             <Button
               type='delete'
               text='삭제'
