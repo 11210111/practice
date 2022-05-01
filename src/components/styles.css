@@ -89,3 +89,13 @@
   display: flex;
   justify-content: space-between;
 }
+
+/* result */
+.result {
+  margin-top: 40px;
+}
+
+.result-text {
+  letter-spacing: 0.03em;
+  text-align: center;
+}

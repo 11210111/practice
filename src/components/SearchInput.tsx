@@ -27,7 +27,12 @@ const SearchInput: React.FC<Props> = ({
   }, []);
 
   return (
-    <form className='search-form' onSubmit={(e) => onAddKeyword(e)}>
+    <form
+      className='search-form'
+      onSubmit={(e) => {
+        onAddKeyword(e);
+        inputRef.current?.blur();
+      }}>
       <input
         type='text'
         className={`search-input ${isOpen && `is-open`}`}

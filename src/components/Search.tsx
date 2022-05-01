@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import SearchInput from './SearchInput';
 import SearchList from './SearchList';
+import Result from './Result';
 
 export interface searchKeyword {
   id: number;
@@ -22,6 +23,7 @@ const Search: React.FC = () => {
         setKeywords([{ id: Date.now(), keyword }, ...keywords]);
       }
     }
+    setIsOpen(false);
   };
 
   const handleRemoveKeyword = (id: number) => {
@@ -48,6 +50,9 @@ const Search: React.FC = () => {
           onRemoveAll={handleRemoveAll}
         />
       )}
+      {!isOpen && !!keywords.length ? (
+        <Result keyword={keywords[0].keyword} />
+      ) : null}
     </article>
   );
 };

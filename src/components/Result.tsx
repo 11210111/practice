@@ -1,9 +1,14 @@
 import React from 'react';
 
-const Result: React.FC = () => {
+type Props = {
+  keyword: string;
+};
+const Result: React.FC<Props> = ({ keyword }) => {
   return (
     <div className='result'>
-      <p>''를 검색했습니다.</p>
+      <p className='result-text'>
+        <b>{keyword} </b>을(를) 검색했습니다.
+      </p>
     </div>
   );
 };
