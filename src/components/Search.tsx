@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SearchInput from './SearchInput';
 import SearchList from './SearchList';
 
@@ -32,10 +32,6 @@ const Search: React.FC = () => {
     setKeywords([]);
   };
 
-  useEffect(() => {
-    keywords.length ? setIsOpen(true) : setIsOpen(false);
-  }, [keywords.length]);
-
   return (
     <article className='search'>
       <SearchInput
@@ -43,8 +39,9 @@ const Search: React.FC = () => {
         setKeyword={setKeyword}
         onAddKeyword={handleAddKeyword}
         isOpen={isOpen}
+        setIsOpen={setIsOpen}
       />
-      {!!keywords.length && (
+      {isOpen && (
         <SearchList
           keywords={keywords}
           onRemoveKeyword={handleRemoveKeyword}
