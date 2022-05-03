@@ -9,6 +9,7 @@ interface Props {
   onAddKeyword: (e: React.FormEvent) => void;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onKeydownKeyword: (e: React.KeyboardEvent) => void;
 }
 
 const SearchInput: React.FC<Props> = ({
@@ -17,6 +18,7 @@ const SearchInput: React.FC<Props> = ({
   onAddKeyword,
   isOpen,
   setIsOpen,
+  onKeydownKeyword
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -40,6 +42,7 @@ const SearchInput: React.FC<Props> = ({
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
         onClick={() => setIsOpen(true)}
+        onKeyDown={onKeydownKeyword}
       />
       <Button text={<BsSearch />} type='search' />
     </form>

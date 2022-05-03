@@ -114,6 +114,11 @@
   box-shadow: 1px -1px 1px 1px var(--shadow);
 }
 
+.search-item.is-focus {
+  background-color: var(--shadow);
+  box-shadow: 1px -1px 1px 1px var(--shadow);
+}
+
 .search-keyword {
   flex: 8;
   margin: 5px 5px 0;

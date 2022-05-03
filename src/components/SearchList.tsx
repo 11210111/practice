@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import Button from './Button';
 import { searchKeyword } from './Search';
 
@@ -7,6 +7,8 @@ interface Props {
   onRemoveKeyword: (id: number) => void;
   onRemoveAll: () => void;
   onClickKeyword: (keyword: string) => void;
+  setRefCount: React.Dispatch<React.SetStateAction<number>>;
+  keywordIndex: number;
 }
 
 const SearchList: React.FC<Props> = ({
@@ -14,7 +16,15 @@ const SearchList: React.FC<Props> = ({
   onRemoveKeyword,
   onRemoveAll,
   onClickKeyword,
+  setRefCount,
+  keywordIndex,
 }) => {
+  const ulRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    setRefCount(ulRef.current!.childElementCount);
+  }, []);
+
   return (
     <section className='search-list'>
       {!!keywords.length ? (
@@ -27,11 +37,15 @@ const SearchList: React.FC<Props> = ({
           <p>최근 검색어가 없습니다.</p>
         </div>
       )}
-      <ul>
-        {keywords.map((keywordData) => (
-          <li key={keywordData.id} className='search-item'>
+      <ul ref={ulRef}>
+        {keywords.map((keywordData, index) => (
+          <li
+            key={keywordData.id}
+            className={`search-item ${
+              index === keywordIndex ? 'is-focus' : ''
+            } `}>
             <div
-              className='search-keyword'
+              className={`search-keyword`}
               onClick={() => {
                 onClickKeyword(keywordData.keyword);
               }}>
