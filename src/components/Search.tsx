@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import SearchInput from './SearchInput';
 import SearchList from './SearchList';
 import Result from './Result';
@@ -86,8 +86,20 @@ const Search: React.FC = () => {
     setShowResult(false);
   }, []);
 
+  const searchWrapperRef = useRef<HTMLElement>(null);
+
+  const handleClickSide = (e: MouseEvent) => {
+    if (!searchWrapperRef.current?.contains(e.target as HTMLElement)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickSide);
+  }, []);
+
   return (
-    <article className='search'>
+    <article className='search' ref={searchWrapperRef}>
       <SearchInput
         keyword={keyword}
         setKeyword={setKeyword}
