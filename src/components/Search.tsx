@@ -10,19 +10,24 @@ export interface searchKeyword {
 
 const Search: React.FC = () => {
   const [keyword, setKeyword] = useState<string>('');
-  const [keywords, setKeywords] = useState<searchKeyword[]>([]);
+  const [keywords, setKeywords] = useState<searchKeyword[]>(
+    () => JSON.parse(localStorage.getItem('keywords') || '[]') || []
+  );
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [showResult, setShowResult] = useState<boolean>(false);
 
   const handleAddKeyword = (e?: React.FormEvent, word: string = keyword) => {
     e && e.preventDefault();
     if (word) {
       makeUniqueKeywords(word);
-      setKeywords((keywords) => [
-        { id: Date.now(), keyword: word },
-        ...keywords,
-      ]);
+      setKeywords((keywords) => {
+        const newKeywords = [{ id: Date.now(), keyword: word }, ...keywords];
+        localStorage.setItem('keywords', JSON.stringify(newKeywords));
+        return newKeywords;
+      });
     }
     setIsOpen(false);
+    setShowResult(true);
   };
 
   const handleRemoveKeyword = (id: number) => {
@@ -77,6 +82,10 @@ const Search: React.FC = () => {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    setShowResult(false);
+  }, []);
+
   return (
     <article className='search'>
       <SearchInput
@@ -97,9 +106,7 @@ const Search: React.FC = () => {
           keywordIndex={keywordIndex}
         />
       )}
-      {!isOpen && !!keywords.length ? (
-        <Result keyword={keywords[0].keyword} />
-      ) : null}
+      {!isOpen && showResult && <Result keyword={keywords[0].keyword} />}
     </article>
   );
 };
