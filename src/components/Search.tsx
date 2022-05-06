@@ -1,59 +1,50 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useReducer } from 'react';
 import SearchInput from './SearchInput';
 import SearchList from './SearchList';
 import Result from './Result';
 
-export interface searchKeyword {
-  id: number;
-  keyword: string;
-}
+import reducer from '../utils/keywordReducer';
+import { initialKeywordState } from '../utils/keywordReducer';
 
 const Search: React.FC = () => {
+  const [keywords, dispatch] = useReducer(reducer, initialKeywordState);
   const [keyword, setKeyword] = useState<string>('');
-  const [keywords, setKeywords] = useState<searchKeyword[]>(
-    () => JSON.parse(localStorage.getItem('keywords') || '[]') || []
-  );
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showResult, setShowResult] = useState<boolean>(false);
 
-  const handleAddKeyword = (e?: React.FormEvent, word: string = keyword) => {
-    e && e.preventDefault();
-    if (word) {
-      makeUniqueKeywords(word);
-      setKeywords((keywords) => {
-        const newKeywords = [{ id: Date.now(), keyword: word }, ...keywords];
-        localStorage.setItem('keywords', JSON.stringify(newKeywords));
-        return newKeywords;
-      });
+  // INIT
+  useEffect(() => {
+    const keywords = localStorage.getItem('keywords');
+    if (keywords) {
+      const keywordsList = JSON.parse(keywords || '[]');
+      dispatch({ type: 'INIT', data: keywordsList });
     }
+    setShowResult(false);
+  }, []);
+
+  // ADD
+  const onAdd = (e?: React.FormEvent, word: string = keyword) => {
+    e?.preventDefault();
+    dispatch({ type: 'ADD', payload: { id: Date.now(), keyword: word } });
     setIsOpen(false);
     setShowResult(true);
   };
 
-  const handleRemoveKeyword = (id: number) => {
-    setKeywords(keywords.filter((keywordData) => keywordData.id !== id));
+  // REMOVE
+  const onRemove = (targetId: number) => {
+    dispatch({ type: 'REMOVE', targetId });
+    setIsOpen(true);
+    setShowResult(false);
   };
 
-  const handleRemoveAll = () => {
-    setKeywords([]);
+  // RESET
+  const onReset = () => {
+    dispatch({ type: 'RESET' });
   };
 
   const handleClickKeyword = (keyword: string) => {
     setKeyword(keyword);
-    handleAddKeyword(undefined, keyword);
-  };
-
-  const makeUniqueKeywords = (keyword: string) => {
-    const preKeyword = keywords.find(
-      (keywordData) => keywordData.keyword === keyword
-    );
-    if (!!preKeyword) {
-      setKeywords((keywords) =>
-        keywords.filter(
-          (keywordData) => keywordData.keyword !== preKeyword.keyword
-        )
-      );
-    }
+    onAdd(undefined, keyword);
   };
 
   const [refCount, setRefCount] = useState<number>(0);
@@ -82,14 +73,9 @@ const Search: React.FC = () => {
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    setShowResult(false);
-  }, []);
-
-  const searchWrapperRef = useRef<HTMLElement>(null);
-
   const handleClickSide = (e: MouseEvent) => {
-    if (!searchWrapperRef.current?.contains(e.target as HTMLElement)) {
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'BODY' || target.tagName === 'H1') {
       setIsOpen(false);
     }
   };
@@ -99,11 +85,11 @@ const Search: React.FC = () => {
   }, []);
 
   return (
-    <article className='search' ref={searchWrapperRef}>
+    <article className='search'>
       <SearchInput
         keyword={keyword}
         setKeyword={setKeyword}
-        onAddKeyword={handleAddKeyword}
+        onAddKeyword={onAdd}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         onKeydownKeyword={handleKeydownKeyword}
@@ -111,14 +97,16 @@ const Search: React.FC = () => {
       {isOpen && (
         <SearchList
           keywords={keywords}
-          onRemoveKeyword={handleRemoveKeyword}
-          onRemoveAll={handleRemoveAll}
+          onRemoveKeyword={onRemove}
+          onRemoveAll={onReset}
           onClickKeyword={handleClickKeyword}
           setRefCount={setRefCount}
           keywordIndex={keywordIndex}
         />
       )}
-      {!isOpen && showResult && <Result keyword={keywords[0].keyword} />}
+      {!isOpen && showResult && !!keywords.length && (
+        <Result keyword={keywords[0].keyword} />
+      )}
     </article>
   );
 };

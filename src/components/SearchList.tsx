@@ -1,9 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import Button from './Button';
-import { searchKeyword } from './Search';
+
+import { KeywordState } from '../utils/keywordReducer';
 
 interface Props {
-  keywords: searchKeyword[];
+  keywords: KeywordState[];
   onRemoveKeyword: (id: number) => void;
   onRemoveAll: () => void;
   onClickKeyword: (keyword: string) => void;
