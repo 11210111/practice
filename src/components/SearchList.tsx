@@ -1,21 +1,13 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
 import Button from './Button';
-
-import { KeywordState } from '../utils/keywordReducer';
-
+import { KeywordsDispatchContext, KeywordsStateContext } from './Search';
 interface Props {
-  keywords: KeywordState[];
-  onRemoveKeyword: (id: number) => void;
-  onRemoveAll: () => void;
   onClickKeyword: (keyword: string) => void;
   setRefCount: React.Dispatch<React.SetStateAction<number>>;
   keywordIndex: number;
 }
 
 const SearchList: React.FC<Props> = ({
-  keywords,
-  onRemoveKeyword,
-  onRemoveAll,
   onClickKeyword,
   setRefCount,
   keywordIndex,
@@ -26,12 +18,15 @@ const SearchList: React.FC<Props> = ({
     setRefCount(ulRef.current!.childElementCount);
   }, []);
 
+  const keywords = useContext(KeywordsStateContext);
+  const { onReset, onRemove } = useContext(KeywordsDispatchContext);
+
   return (
     <section className='search-list'>
       {!!keywords.length ? (
         <div className='search-list-header'>
           <h3>최근 검색어</h3>
-          <Button type='delete-all' text='전체 삭제' onClick={onRemoveAll} />
+          <Button type='delete-all' text='전체 삭제' onClick={onReset} />
         </div>
       ) : (
         <div className='search-list-header'>
@@ -55,7 +50,7 @@ const SearchList: React.FC<Props> = ({
             <Button
               type='delete'
               text='삭제'
-              onClick={() => onRemoveKeyword(keywordData.id)}
+              onClick={() => onRemove(keywordData.id)}
             />
           </li>
         ))}

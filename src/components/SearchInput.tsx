@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import Button from './Button';
 
 import { BsSearch } from 'react-icons/bs';
+import { KeywordsDispatchContext } from './Search';
 
 interface Props {
   keyword: string;
   setKeyword: React.Dispatch<React.SetStateAction<string>>;
-  onAddKeyword: (e: React.FormEvent) => void;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onKeydownKeyword: (e: React.KeyboardEvent) => void;
@@ -15,10 +15,9 @@ interface Props {
 const SearchInput: React.FC<Props> = ({
   keyword,
   setKeyword,
-  onAddKeyword,
   isOpen,
   setIsOpen,
-  onKeydownKeyword
+  onKeydownKeyword,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -28,11 +27,13 @@ const SearchInput: React.FC<Props> = ({
     }
   }, []);
 
+  const { onAdd } = useContext(KeywordsDispatchContext);
+
   return (
     <form
       className='search-form'
       onSubmit={(e) => {
-        onAddKeyword(e);
+        onAdd(e);
         inputRef.current?.blur();
       }}>
       <input

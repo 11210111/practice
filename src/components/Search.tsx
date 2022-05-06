@@ -5,6 +5,20 @@ import Result from './Result';
 
 import reducer from '../utils/keywordReducer';
 import { initialKeywordState } from '../utils/keywordReducer';
+import { KeywordState } from '../utils/keywordReducer';
+
+export const KeywordsStateContext = React.createContext<KeywordState[]>(
+  {} as KeywordState[]
+);
+
+interface IKeywordsDispatchContext {
+  onAdd: (e?: React.FormEvent<Element> | undefined, word?: string) => void;
+  onRemove: (targetId: number) => void;
+  onReset: () => void;
+}
+
+export const KeywordsDispatchContext =
+  React.createContext<IKeywordsDispatchContext>({} as IKeywordsDispatchContext);
 
 const Search: React.FC = () => {
   const [keywords, dispatch] = useReducer(reducer, initialKeywordState);
@@ -85,29 +99,29 @@ const Search: React.FC = () => {
   }, []);
 
   return (
-    <article className='search'>
-      <SearchInput
-        keyword={keyword}
-        setKeyword={setKeyword}
-        onAddKeyword={onAdd}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        onKeydownKeyword={handleKeydownKeyword}
-      />
-      {isOpen && (
-        <SearchList
-          keywords={keywords}
-          onRemoveKeyword={onRemove}
-          onRemoveAll={onReset}
-          onClickKeyword={handleClickKeyword}
-          setRefCount={setRefCount}
-          keywordIndex={keywordIndex}
-        />
-      )}
-      {!isOpen && showResult && !!keywords.length && (
-        <Result keyword={keywords[0].keyword} />
-      )}
-    </article>
+    <KeywordsStateContext.Provider value={keywords}>
+      <KeywordsDispatchContext.Provider value={{ onAdd, onRemove, onReset }}>
+        <article className='search'>
+          <SearchInput
+            keyword={keyword}
+            setKeyword={setKeyword}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            onKeydownKeyword={handleKeydownKeyword}
+          />
+          {isOpen && (
+            <SearchList
+              onClickKeyword={handleClickKeyword}
+              setRefCount={setRefCount}
+              keywordIndex={keywordIndex}
+            />
+          )}
+          {!isOpen && showResult && !!keywords.length && (
+            <Result keyword={keywords[0].keyword} />
+          )}
+        </article>
+      </KeywordsDispatchContext.Provider>
+    </KeywordsStateContext.Provider>
   );
 };
 export default Search;
